@@ -1,0 +1,73 @@
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 text-center" id="top-bar">
+			<img src="/assets/images/burger.png" width="400px" height = "300px" alt="burger" />
+			<h1>BURGER BONANZA!</h1>
+		</div>
+
+
+    <div class='form-group'>
+        <div class='input-group'>
+            <span class='input-group-addon'>Burger: </span>
+            <input type='text' class='form-control' id='name_burger'>
+        </div>
+        <br>
+        <div class='input-group'>
+            <span class='input-group-addon'>Customer: </span>
+            <input type='text' class='form-control' id='name_customer'>
+        </div>
+        <br>
+        <button type='submit' class='btn btn-primary btn-md' id='submit_burger'>Add Burger</button>
+    <div>
+</div>
+
+<div class='row'>
+    <div class='col-sm-4 col-sm-offset-2' id='ready_to_eat'>
+        <h1 class='text-center bg-warning'>Ready to Eat</h1>
+        {{#each burg}}
+            <p class='text-center' style='font-size: 13pt'>  {{this.burger_name}}</p>
+            <div class='input-group'>
+                <span class='input-group-btn'>
+                    <button class='burger_btn btn btn-default' style='float: left; margin: 0 15px 0 20px' id={{id}}>Devour</button>
+                </span>
+                <input type='text' class='form-control' placeholder='Name' id={{eater_id}}>
+            </div>
+        {{/each}}
+    </div>
+    <div class='col-sm-4' id='in_the_belly'>
+        <h1 class='text-center bg-warning'>In the Belly</h1>
+        {{#each eaten_burg}}
+            <p class='text-center' style='font-size: 10pt'><b>{{this.customer}}'s</b> {{this.burger_name}} (Eaten by {{this.eater}})</p>
+        {{/each}}
+    </div>
+</div>
+
+<script>
+    $('#submit_burger').on('click', function() {
+        event.preventDefault();
+
+        var burger_name = {
+            burger_name: $('#name_burger').val(),
+            customer_name: $('#name_customer').val()
+        };
+
+        $.post('/api/add', burger_name, function(data) {
+            window.location.reload();
+        });
+    });
+
+    $('.burger_btn').on('click', function() {
+        var burger_id = $(this).attr('id');
+        var eater_id = '#' + burger_id + '_eater';
+        var eater = $(eater_id).val();
+
+        var burger_data = {
+            burger_id: burger_id,
+            eater: eater
+        }
+
+        $.post('/api/update', burger_data, function(data) {
+            window.location.reload();
+        });
+    });
+</script>
